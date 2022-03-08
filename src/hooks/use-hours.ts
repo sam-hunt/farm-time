@@ -4,7 +4,7 @@ import { HoursContext, ITimeRange } from '../App/App';
 
 export type IUseHoursForDay = [
     ITimeRange[],
-    (newPeriod: ITimeRange[], day: dayjs.Dayjs) => void,
+    (newPeriod: ITimeRange[]) => void,
 ];
 
 export const useHoursForDay = (day: dayjs.Dayjs): IUseHoursForDay => {
@@ -15,7 +15,7 @@ export const useHoursForDay = (day: dayjs.Dayjs): IUseHoursForDay => {
     const dayKey = day.format('YYYY-MM-DD');
     const hoursForDay = hours[dayKey] || [];
 
-    const setHoursForDay = (hoursForDay: ITimeRange[], day: dayjs.Dayjs) => {
+    const setHoursForDay = (hoursForDay: ITimeRange[]) => {
         const newHours = { ...hours, [dayKey]: hoursForDay }
         if (hoursForDay.length === 0) delete newHours[dayKey];
         setHours(newHours);

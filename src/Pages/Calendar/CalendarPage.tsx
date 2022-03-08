@@ -12,7 +12,7 @@ import Icon from '@mdi/react'
 import { mdiPlus, mdiDelete } from '@mdi/js';
 import MobileTimePicker from '@mui/lab/MobileTimePicker';
 import { HoursContext } from '../../App/App';
-import useLocalStorage from '../../hooks/use-local-storage';
+import useLocalStorageDayjs from '../../hooks/use-local-storage-dayjs';
 
 const highlightedDayStyles = {
     backgroundColor: theme.palette.primary.main,
@@ -21,23 +21,26 @@ const highlightedDayStyles = {
         backgroundColor: theme.palette.primary.dark,
     },
 }
+const today = () => dayjs().hour(0).minute(0).second(0).millisecond(0);
 
 const CalendarPage = () => {
-    const [selectedDate, setSelectedDate] = useLocalStorage<dayjs.Dayjs>('selected-date', dayjs().hour(0).minute(0).second(0).millisecond(0));
+    const [selectedDate, setSelectedDate] = useLocalStorageDayjs('selected-date', today());
 
-    const { hours, setHours } = useContext(HoursContext);
+    const { hours } = useContext(HoursContext);
     const [hoursForDay, setHoursForDay] = useHoursForDay(selectedDate);
 
-    const [newStartTime, setNewStartTime] = useState<dayjs.Dayjs | null>(dayjs().hour(9).minute(0).second(0).millisecond(0));
-    const [newEndTime, setNewEndTime] = useState<dayjs.Dayjs | null>(dayjs().hour(17).minute(0).second(0).millisecond(0));
+    const [newStartTime, setNewStartTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(0).minute(0).second(0).millisecond(0));
+    const [newEndTime, setNewEndTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(23).minute(59).second(59).millisecond(59));
 
     const addHours = () => {
         if (newStartTime && newEndTime)
-            setHoursForDay([...hoursForDay, {startTime: newStartTime.toISOString(), endTime: newEndTime.toISOString()}], selectedDate);
+            setHoursForDay([...hoursForDay, { startTime: newStartTime.toISOString(), endTime: newEndTime.toISOString() }]);
+            setNewStartTime(newEndTime);
+            setNewEndTime(selectedDate.hour(23).minute(59).second(59).millisecond(59));
     };
 
     const delHours = (i: number) => () => {
-        setHoursForDay([...hoursForDay.slice(0, i), ...hoursForDay.slice(i + 1)], selectedDate);
+        setHoursForDay([...hoursForDay.slice(0, i), ...hoursForDay.slice(i + 1)]);
     }
 
     const highlightedDays = useMemo(() => Object.keys(hours), [hours])
@@ -51,7 +54,7 @@ const CalendarPage = () => {
                 <StaticDatePicker
                     openTo="day"
                     value={selectedDate}
-                    onChange={(newValue) => setSelectedDate(newValue || dayjs())}
+                    onChange={(newValue) => setSelectedDate(newValue || today())}
                     inputFormat='YYYY-MM-DD'
                     renderInput={(params) => <TextField {...params} />}
                     renderDay={(
@@ -84,12 +87,7 @@ const CalendarPage = () => {
                         <Typography>{dayjs(h.startTime).format('hh:mm A')}</Typography>
                         <Typography sx={{ mx: 2 }}>to</Typography>
                         <Typography>{dayjs(h.endTime).format('hh:mm A')}</Typography>
-                        <IconButton aria-label="delete" color="error" onClick={delHours(i)} style={{
-                            marginLeft: '10px',
-                            // color: 'red',
-                            // border: `1px solid red`,
-                            // backgroundColor: 'white',
-                        }}>
+                        <IconButton aria-label="delete" color="error" onClick={delHours(i)} style={{ marginLeft: '10px' }}>
                             <Icon path={mdiDelete}
                                 title="Delete"
                                 size={0.8}
