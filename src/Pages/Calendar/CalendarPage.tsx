@@ -10,7 +10,7 @@ import PickersDay, { PickersDayProps, pickersDayClasses } from '@mui/lab/Pickers
 import { useHoursForDay } from '../../hooks/use-hours';
 import Icon from '@mdi/react'
 import { mdiPlus, mdiDelete } from '@mdi/js';
-import MobileTimePicker from '@mui/lab/MobileTimePicker';
+import TimePicker from '@mui/lab/TimePicker';
 import { HoursContext } from '../../App/App';
 import useLocalStorageDayjs from '../../hooks/use-local-storage-dayjs';
 
@@ -35,13 +35,16 @@ const CalendarPage = () => {
     const addHours = () => {
         if (newStartTime && newEndTime)
             setHoursForDay([...hoursForDay, { startTime: newStartTime.toISOString(), endTime: newEndTime.toISOString() }]);
-            setNewStartTime(newEndTime);
-            setNewEndTime(selectedDate.hour(23).minute(59).second(59).millisecond(59));
+        setNewStartTime(newEndTime);
+        setNewEndTime(selectedDate.hour(23).minute(59).second(59).millisecond(59));
     };
 
     const delHours = (i: number) => () => {
         setHoursForDay([...hoursForDay.slice(0, i), ...hoursForDay.slice(i + 1)]);
     }
+
+    // Ensure that the date is correct, e.g. in case a timepicker tries to roll it over a dateline 🤦
+    const ensureSelectedDate = ((date: dayjs.Dayjs | null) => date?.date(selectedDate.date()).month(selectedDate.month()).year(selectedDate.year()) || null)
 
     const highlightedDays = useMemo(() => Object.keys(hours), [hours])
 
@@ -82,41 +85,50 @@ const CalendarPage = () => {
                 <Typography variant='h4' sx={{ mb: 2 }}>
                     Hours
                 </Typography>
-                {hoursForDay.map((h, i) => (
-                    <Box key={i} display="flex" flexDirection="row" alignItems="center" mb="8px">
-                        <Typography>{dayjs(h.startTime).format('hh:mm A')}</Typography>
-                        <Typography sx={{ mx: 2 }}>to</Typography>
-                        <Typography>{dayjs(h.endTime).format('hh:mm A')}</Typography>
-                        <IconButton aria-label="delete" color="error" onClick={delHours(i)} style={{ marginLeft: '10px' }}>
-                            <Icon path={mdiDelete}
-                                title="Delete"
-                                size={0.8}
-                            />
-                        </IconButton>
-                    </Box>)
+                {hoursForDay.map((h, i) => {
+                    const start = dayjs(h.startTime);
+                    const end = dayjs(h.endTime);
+                    const minsDiff = end.diff(start, 'minutes');
+                    const leftoverMins = minsDiff % 60;
+                    const hoursDiff = (minsDiff - leftoverMins) / 60;
+                    const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2,'0')}`;
+                    return (
+                        <Box key={i} display="flex" flexDirection="row" alignItems="center" mb="8px">
+                            <Typography>{start.format('hh:mm A')}</Typography>
+                            <Typography sx={{ mx: 2 }}>to</Typography>
+                            <Typography>{dayjs(end).format('hh:mm A')}</Typography>
+                            <Typography sx={{ ml: 2 }}>({timeDiff})</Typography>
+                            <IconButton aria-label="delete" color="error" onClick={delHours(i)} style={{ marginLeft: '10px' }}>
+                                <Icon path={mdiDelete}
+                                    title="Delete"
+                                    size={0.8}
+                                />
+                            </IconButton>
+                        </Box>);
+                }
                 )}
                 <Box display="flex" flexDirection="row" alignItems="center" mt="30px">
-                    <MobileTimePicker
+                    <TimePicker
                         label="Start"
                         value={newStartTime}
                         maxTime={newEndTime || undefined}
-                        onChange={(newStartTime: dayjs.Dayjs | null) => setNewStartTime(newStartTime)}
-                        renderInput={(params: any) => <TextField {...params} variant="standard" style={{ width: '100px' }} />}
+                        onChange={(newStartTime: dayjs.Dayjs | null) => setNewStartTime(ensureSelectedDate(newStartTime))}
+                        renderInput={(params: any) => <TextField {...params} variant="standard" style={{ width: '110px' }} />}
                     />
                     <Typography sx={{ mx: 2 }}>to</Typography>
-                    <MobileTimePicker
+                    <TimePicker
                         label="End"
                         value={newEndTime}
                         minTime={newStartTime || undefined}
-                        onChange={(newEndTime: dayjs.Dayjs | null) => setNewEndTime(newEndTime)}
-                        renderInput={(params: any) => <TextField {...params} variant="standard" style={{ width: '100px' }} />}
+                        onChange={(newEndTime: dayjs.Dayjs | null) => setNewEndTime(ensureSelectedDate(newEndTime))}
+                        renderInput={(params: any) => <TextField {...params} variant="standard" style={{ width: '110px' }} />}
                     />
                     <IconButton aria-label="Add new hours" onClick={addHours} style={{
                         color: theme.palette.secondary.contrastText,
                         backgroundColor: theme.palette.secondary.main,
                         marginLeft: '10px',
                     }}>
-                        <Icon path={mdiPlus} title="Add new hours" size={1}/>
+                        <Icon path={mdiPlus} title="Add new hours" size={1} />
                     </IconButton>
                 </Box>
             </LocalizationProvider>
