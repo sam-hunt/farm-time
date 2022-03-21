@@ -6,6 +6,7 @@ import AdapterDayjs from '@mui/lab/AdapterDayjs';
 import MobileDateRangePicker from '@mui/lab/MobileDateRangePicker';
 import Report from './Report';
 import useLocalStorage from '../../hooks/use-local-storage';
+import Total from './Total';
 
 const ReportsPage = () => {
 
@@ -32,6 +33,9 @@ const ReportsPage = () => {
                     </>)}
                 />
             </LocalizationProvider>
+            <br />
+            <br />
+            {renderReport && <Total start={dateRange[0]!} end={dateRange[1]!} />}
             <br />
             <br />
             {renderReport && <Report start={dateRange[0]!} end={dateRange[1]!} />}

@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import { useContext } from 'react';
 import { HoursContext } from '../../App/App';
-import { Divider, Typography } from '@mui/material';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -25,11 +24,6 @@ const Report = ({ start, end }: IReportProps) => {
         return day.isSame(start, 'day') || day.isSame(end, 'day') || (day.isAfter(start) && day.isBefore(end));
     }).sort();
 
-    const totalMins = daysInRange.reduce((total, day) => total + hours[day].reduce((dayTotal, times) => dayTotal + dayjs(times.endTime).diff(dayjs(times.startTime), 'minutes'), 0), 0)
-
-    const totalLeftoverMins = totalMins % 60;
-    const totalHours = (totalMins - totalLeftoverMins) / 60;
-
     const rows = daysInRange.flatMap(date => hours[date].map(times => {
         const dateObj = dayjs(date);
         const startObj = dayjs(times.startTime);
@@ -48,9 +42,7 @@ const Report = ({ start, end }: IReportProps) => {
     }));
 
     return (<>
-        <Typography variant='h4'>Total {totalHours} hours{totalLeftoverMins > 0 && `, ${totalLeftoverMins} minutes`}</Typography>
-        <br /><br />
-        <TableContainer component={Paper} >
+        <TableContainer component={Paper} style={{ padding: '5px' }} >
             <Table aria-label="Hours breakdown">
                 <TableHead>
                     <TableRow>
