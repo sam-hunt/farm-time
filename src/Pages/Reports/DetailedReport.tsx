@@ -5,7 +5,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 
 import useHours from '../../hooks/use-hours';
 
@@ -23,7 +22,7 @@ const DetailedReport = ({ start, end }: IReportProps) => {
         return day.isSame(start, 'day') || day.isSame(end, 'day') || (day.isAfter(start) && day.isBefore(end));
     }).sort();
 
-    const rows = daysInRange.flatMap(date => hours[date].map(times => {
+    const rows = daysInRange.flatMap((date, i) => hours[date].map(times => {
         const dateObj = dayjs(date);
         const startObj = dayjs(times.startTime);
         const endObj = dayjs(times.endTime);
@@ -31,17 +30,18 @@ const DetailedReport = ({ start, end }: IReportProps) => {
         const leftoverMins = minsDiff % 60;
         const hoursDiff = (minsDiff - leftoverMins) / 60;
         const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2,'0')}`;
+        const bgColor = i%2 ? 'white' : 'whitesmoke';
         return {
             key: date + times.startTime,
             day: dateObj.format('dddd'),
             start: startObj.format('hh:mm A'),
             end: endObj.format('hh:mm A'),
-            date, timeDiff,
+            date, timeDiff, bgColor,
         };
     }));
 
     return (<>
-        <TableContainer component={Paper} style={{ padding: '5px' }} >
+        <TableContainer>
             <Table aria-label="Hours breakdown">
                 <TableHead>
                     <TableRow>
@@ -57,6 +57,7 @@ const DetailedReport = ({ start, end }: IReportProps) => {
                         <TableRow
                             key={row.key}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            style={{ backgroundColor: row.bgColor }}
                         >
                             <TableCell component="th" scope="row">
                                 {row.date}

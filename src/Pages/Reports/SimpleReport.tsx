@@ -5,7 +5,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 
 import useHours from '../../hooks/use-hours';
 
@@ -40,7 +39,7 @@ const SimpleReport = ({ start, end }: IReportProps) => {
     });
 
     return (<>
-        <TableContainer component={Paper} style={{ padding: '5px' }} >
+        <TableContainer>
             <Table aria-label="Hours breakdown">
                 <TableHead>
                     <TableRow>
