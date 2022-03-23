@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo } from 'react';
 import AdapterDayjs from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import StaticDatePicker from '@mui/lab/StaticDatePicker';
@@ -7,12 +7,12 @@ import TextField from '@mui/material/TextField';
 import { Box, IconButton, Typography } from '@mui/material';
 import { theme } from '../../theme';
 import PickersDay, { PickersDayProps, pickersDayClasses } from '@mui/lab/PickersDay';
-import { useHoursForDay } from '../../hooks/use-hours';
+import useHours from '../../hooks/use-hours';
 import Icon from '@mdi/react'
 import { mdiPlus, mdiDelete } from '@mdi/js';
 import TimePicker from '@mui/lab/TimePicker';
-import { HoursContext } from '../../App/App';
 import useLocalStorageDayjs from '../../hooks/use-local-storage-dayjs';
+import useHoursForDay from '../../hooks/use-hours-for-day';
 
 const highlightedDayStyles = {
     backgroundColor: theme.palette.primary.main,
@@ -26,8 +26,8 @@ const today = () => dayjs().hour(0).minute(0).second(0).millisecond(0);
 const CalendarPage = () => {
     const [selectedDate, setSelectedDate] = useLocalStorageDayjs('selected-date', today());
 
-    const { hours } = useContext(HoursContext);
-    const [hoursForDay, setHoursForDay] = useHoursForDay(selectedDate);
+    const { hours } = useHours();
+    const { hoursForDay, setHoursForDay, hoursForDayTotal } = useHoursForDay(selectedDate);
 
     const [newStartTime, setNewStartTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(0).minute(0).second(0).millisecond(0));
     const [newEndTime, setNewEndTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(23).minute(59).second(59).millisecond(59));
@@ -83,21 +83,29 @@ const CalendarPage = () => {
                     }}
                 />
                 <Typography variant='h4' sx={{ mb: 2 }}>
-                    Hours
+                    {hoursForDayTotal.totalHours} Hours,&nbsp;
+                    {hoursForDayTotal.totalLeftoverMins} Minutes
                 </Typography>
+
                 {hoursForDay.map((h, i) => {
                     const start = dayjs(h.startTime);
                     const end = dayjs(h.endTime);
                     const minsDiff = end.diff(start, 'minutes');
                     const leftoverMins = minsDiff % 60;
                     const hoursDiff = (minsDiff - leftoverMins) / 60;
-                    const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2,'0')}`;
+                    const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2,'0')} hours`;
                     return (
                         <Box key={i} display="flex" flexDirection="row" alignItems="center" mb="8px">
-                            <Typography>{start.format('hh:mm A')}</Typography>
-                            <Typography sx={{ mx: 2 }}>to</Typography>
-                            <Typography>{dayjs(end).format('hh:mm A')}</Typography>
-                            <Typography sx={{ ml: 2 }}>({timeDiff})</Typography>
+                            <Typography color='primary'>
+                                <strong>{start.format('hh:mm A')}</strong>
+                            </Typography>
+                            <Typography sx={{ mx: 1 }}>to</Typography>
+                            <Typography color='primary'>
+                                <strong>{dayjs(end).format('hh:mm A')}</strong>
+                            </Typography>
+                            <Typography color='secondary' sx={{ ml: 2 }}>
+                                (<strong>{timeDiff}</strong>)
+                            </Typography>
                             <IconButton aria-label="delete" color="error" onClick={delHours(i)} style={{ marginLeft: '10px' }}>
                                 <Icon path={mdiDelete}
                                     title="Delete"
@@ -115,7 +123,7 @@ const CalendarPage = () => {
                         onChange={(newStartTime: dayjs.Dayjs | null) => setNewStartTime(ensureSelectedDate(newStartTime))}
                         renderInput={(params: any) => <TextField {...params} variant="standard" style={{ width: '110px' }} />}
                     />
-                    <Typography sx={{ mx: 2 }}>to</Typography>
+                    <Typography sx={{ mx: 2, mt: 1 }}>to</Typography>
                     <TimePicker
                         label="End"
                         value={newEndTime}

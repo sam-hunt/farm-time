@@ -15,9 +15,9 @@ export type IHours = {
     [date: string]: ITimeRange[],
 };
 
-interface IHoursContext {
+export interface IHoursContext {
     hours: IHours;
-    setHours: (hours: IHours) => any,
+    setHours: (hours: IHours) => void,
 }
 
 export const HoursContext = createContext<IHoursContext>({ hours: {}, setHours: (hours) => {} });
