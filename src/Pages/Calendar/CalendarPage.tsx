@@ -134,7 +134,7 @@ const CalendarPage = () => {
                     <IconButton aria-label="Add new hours" onClick={addHours} style={{
                         color: theme.palette.secondary.contrastText,
                         backgroundColor: theme.palette.secondary.main,
-                        marginLeft: '10px',
+                        marginLeft: '20px',
                     }}>
                         <Icon path={mdiPlus} title="Add new hours" size={1} />
                     </IconButton>
