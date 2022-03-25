@@ -4,7 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Icon from '@mdi/react'
-import { mdiCalendar, mdiMenu, mdiSigma } from '@mdi/js';
+import { mdiExport, mdiCalendar, mdiMenu, mdiSigma } from '@mdi/js';
 import { MouseEventHandler, useState } from 'react';
 import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -22,28 +22,28 @@ const Nav = () => {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position='static'>
                 <Toolbar>
                     <IconButton
-                        id="basic-button"
+                        id='basic-button'
                         aria-controls={open ? 'basic-menu' : undefined}
-                        aria-haspopup="true"
+                        aria-haspopup='true'
                         aria-expanded={open ? 'true' : undefined}
                         onClick={handleClick}
 
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
+                        size='large'
+                        edge='start'
+                        color='inherit'
+                        aria-label='menu'
                         sx={{ mr: 2 }}
                     >
                         <Icon path={mdiMenu}
-                            title="Menu"
+                            title='Menu'
                             size={1}
                         />
                     </IconButton>
                     <Menu
-                        id="basic-menu"
+                        id='basic-menu'
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
@@ -54,7 +54,7 @@ const Nav = () => {
                         <MenuItem component={Link} to={'/calendar'} onClick={handleClose}>
                             <ListItemIcon>
                                 <Icon path={mdiCalendar}
-                                    title="Menu"
+                                    title='Menu'
                                     size={1}
                                 />
                             </ListItemIcon>
@@ -65,7 +65,7 @@ const Nav = () => {
                         <MenuItem component={Link} to={'/reports'} onClick={handleClose}>
                             <ListItemIcon>
                                 <Icon path={mdiSigma}
-                                    title="Menu"
+                                    title='Menu'
                                     size={1}
                                 />
                             </ListItemIcon>
@@ -73,8 +73,19 @@ const Nav = () => {
                                 Reports
                             </ListItemText>
                         </MenuItem>
+                        <MenuItem component={Link} to={'/backup-restore'} onClick={handleClose}>
+                            <ListItemIcon>
+                                <Icon path={mdiExport}
+                                    title='Menu'
+                                    size={1}
+                                />
+                            </ListItemIcon>
+                            <ListItemText>
+                                Backup/Restore
+                            </ListItemText>
+                        </MenuItem>
                     </Menu>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
                         Farm Time
                     </Typography>
                 </Toolbar>

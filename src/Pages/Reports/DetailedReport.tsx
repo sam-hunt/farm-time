@@ -42,14 +42,14 @@ const DetailedReport = ({ start, end }: IReportProps) => {
 
     return (<>
         <TableContainer>
-            <Table aria-label="Hours breakdown">
+            <Table aria-label='Hours breakdown'>
                 <TableHead>
                     <TableRow>
                         <TableCell>Date</TableCell>
                         <TableCell>Day</TableCell>
-                        <TableCell align="right">Start</TableCell>
-                        <TableCell align="right">End</TableCell>
-                        <TableCell align="right">Time</TableCell>
+                        <TableCell align='right'>Start</TableCell>
+                        <TableCell align='right'>End</TableCell>
+                        <TableCell align='right'>Time</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -59,13 +59,13 @@ const DetailedReport = ({ start, end }: IReportProps) => {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             style={{ backgroundColor: row.bgColor }}
                         >
-                            <TableCell component="th" scope="row">
+                            <TableCell component='th' scope='row'>
                                 {row.date}
                             </TableCell>
                             <TableCell>{row.day}</TableCell>
-                            <TableCell align="right">{row.start}</TableCell>
-                            <TableCell align="right">{row.end}</TableCell>
-                            <TableCell align="right">{row.timeDiff}</TableCell>
+                            <TableCell align='right'>{row.start}</TableCell>
+                            <TableCell align='right'>{row.end}</TableCell>
+                            <TableCell align='right'>{row.timeDiff}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

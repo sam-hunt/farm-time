@@ -24,7 +24,7 @@ const ReportsPage = () => {
             </Typography>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <MobileDateRangePicker
-                    startText="Start"
+                    startText='Start'
                     value={dateRange}
                     onChange={(newValue) => setValue(newValue)}
                     inputFormat='YYYY-MM-DD'
@@ -39,12 +39,12 @@ const ReportsPage = () => {
             <br />
             {renderReport && <Typography variant='h4'>Total {totalHours} hours{totalLeftoverMins > 0 && `, ${totalLeftoverMins} minutes`}</Typography>}
             <br />
-            <InputLabel id="report-selector-label">Report</InputLabel>
+            <InputLabel id='report-selector-label'>Report</InputLabel>
             <Select
                 style={{ minWidth: '200px' }}
-                labelId="report-selector-label"
+                labelId='report-selector-label'
                 value={selectedReport}
-                label="Report"
+                label='Report'
                 onChange={(event) => setSelectedReport(event.target.value)}
             >
                 <MenuItem value='simple'>Simple</MenuItem>
@@ -56,6 +56,8 @@ const ReportsPage = () => {
                 'simple': <SimpleReport start={dateRange[0]!} end={dateRange[1]!} />,
                 'detailed': <DetailedReport start={dateRange[0]!} end={dateRange[1]!} />,
             }[selectedReport]}
+            <br />
+            <br />
         </section>
     );
 }

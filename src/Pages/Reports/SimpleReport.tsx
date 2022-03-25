@@ -40,12 +40,12 @@ const SimpleReport = ({ start, end }: IReportProps) => {
 
     return (<>
         <TableContainer>
-            <Table aria-label="Hours breakdown">
+            <Table aria-label='Hours breakdown'>
                 <TableHead>
                     <TableRow>
                         <TableCell>Date</TableCell>
                         <TableCell>Day</TableCell>
-                        <TableCell align="right">Time</TableCell>
+                        <TableCell align='right'>Time</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -54,11 +54,11 @@ const SimpleReport = ({ start, end }: IReportProps) => {
                             key={row.key}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell component="th" scope="row">
+                            <TableCell component='th' scope='row'>
                                 {row.date}
                             </TableCell>
                             <TableCell>{row.day}</TableCell>
-                            <TableCell align="right">{row.timeDiff}</TableCell>
+                            <TableCell align='right'>{row.timeDiff}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

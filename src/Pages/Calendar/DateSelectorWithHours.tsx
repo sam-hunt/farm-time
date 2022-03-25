@@ -26,7 +26,7 @@ const DateSelectorWithHours = ({ value, onChange }: IDateSelectorWithHoursProps)
 
     return <LocalizationProvider dateAdapter={AdapterDayjs}>
         <StaticDatePicker
-            openTo="day"
+            openTo='day'
             value={value}
             onChange={onChange}
             inputFormat='YYYY-MM-DD'

@@ -1,10 +1,10 @@
 import './App.css';
-import dayjs from 'dayjs';
 import { createContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import CalendarPage from '../Pages/Calendar/CalendarPage';
 import ReportsPage from '../Pages/Reports/ReportsPage';
+import BackupRestorePage from '../Pages/BackupRestore/BackupRestorePage';
 import useLocalStorage from '../hooks/use-local-storage';
 
 export interface ITimeRange {
@@ -31,6 +31,7 @@ const App = () => {
                 <Route path="/" element={<Layout />}>
                     <Route path="calendar" element={<CalendarPage />} />
                     <Route path="reports" element={<ReportsPage />} />
+                    <Route path="backup-restore" element={<BackupRestorePage />} />
                 </Route>
             </Routes>
         </HoursContext.Provider>

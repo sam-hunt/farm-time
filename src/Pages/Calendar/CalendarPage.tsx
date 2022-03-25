@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import { Box, IconButton, Typography } from '@mui/material';
 import { theme } from '../../theme';
 import Icon from '@mdi/react'
-import { mdiPlus, mdiDelete } from '@mdi/js';
+import { mdiPlus, mdiDelete, mdiPencil, mdiCheck, mdiClose } from '@mdi/js';
 import TimePicker from '@mui/lab/TimePicker';
 import useLocalStorageDayjs from '../../hooks/use-local-storage-dayjs';
 import useHoursForDay from '../../hooks/use-hours-for-day';
@@ -29,9 +29,17 @@ const CalendarPage = () => {
         setNewStartTime(newEndTime);
         setNewEndTime(selectedDate.hour(23).minute(59).second(59).millisecond(59));
     };
+    const editHours = (i: number) => () => {
 
+    }
     const delHours = (i: number) => () => {
         setHoursForDay([...hoursForDay.slice(0, i), ...hoursForDay.slice(i + 1)]);
+    }
+    const saveEdit = () => {
+
+    }
+    const discardEdit = () => {
+
     }
 
     // Ensure that the date is correct, e.g. in case a timepicker tries to roll it over a dateline 🤦
@@ -48,6 +56,45 @@ const CalendarPage = () => {
                 {hoursForDayTotal.totalLeftoverMins} Minutes
             </Typography>
 
+            <Box display='flex' flexDirection='row' alignItems='center' mb='30px'>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                        label='Start'
+                        value={newStartTime}
+                        maxTime={newEndTime || undefined}
+                        onChange={(newStartTime: dayjs.Dayjs | null) => setNewStartTime(ensureSelectedDate(newStartTime))}
+                        renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '110px' }} />}
+                    />
+                    <Typography sx={{ mx: 2, mt: 1 }}>to</Typography>
+                    <TimePicker
+                        label='End'
+                        value={newEndTime}
+                        minTime={newStartTime || undefined}
+                        onChange={(newEndTime: dayjs.Dayjs | null) => setNewEndTime(ensureSelectedDate(newEndTime))}
+                        renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '110px' }} />}
+                    />
+                    <IconButton aria-label='Add new hours' onClick={addHours} style={{
+                        color: theme.palette.secondary.contrastText,
+                        backgroundColor: theme.palette.secondary.main,
+                        marginLeft: '25px',
+                    }}>
+                        <Icon path={mdiPlus} title='Add new hours' size={1} />
+                    </IconButton>
+                    <IconButton aria-label='Add new hours' onClick={saveEdit} style={{
+                        color: theme.palette.success.main,
+                        marginLeft: '25px',
+                    }}>
+                        <Icon path={mdiCheck} title='Add new hours' size={1} />
+                    </IconButton>
+                    <IconButton aria-label='Add new hours' onClick={discardEdit} style={{
+                        color: theme.palette.warning.main,
+                        marginLeft: '5px',
+                    }}>
+                        <Icon path={mdiClose} title='Add new hours' size={1} />
+                    </IconButton>
+                </LocalizationProvider>
+            </Box>
+
             {hoursForDay.map((h, i) => {
                 const start = dayjs(h.startTime);
                 const end = dayjs(h.endTime);
@@ -56,7 +103,7 @@ const CalendarPage = () => {
                 const hoursDiff = (minsDiff - leftoverMins) / 60;
                 const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2, '0')} hours`;
                 return (
-                    <Box key={i} display="flex" flexDirection="row" alignItems="center" mb="8px">
+                    <Box key={i} display='flex' flexDirection='row' alignItems='center' mb='8px'>
                         <Typography color='primary'>
                             <strong>{start.format('hh:mm A')}</strong>
                         </Typography>
@@ -67,41 +114,21 @@ const CalendarPage = () => {
                         <Typography color='secondary' sx={{ ml: 2 }}>
                             (<strong>{timeDiff}</strong>)
                         </Typography>
-                        <IconButton aria-label="delete" color="error" onClick={delHours(i)} style={{ marginLeft: '10px' }}>
+                        <IconButton aria-label='edit' onClick={editHours(i)} style={{ marginLeft: '10px' }}>
+                            <Icon path={mdiPencil}
+                                title='Edit'
+                                size={0.8}
+                            />
+                        </IconButton>
+                        <IconButton aria-label='delete' color='error' onClick={delHours(i)}>
                             <Icon path={mdiDelete}
-                                title="Delete"
+                                title='Delete'
                                 size={0.8}
                             />
                         </IconButton>
                     </Box>);
             }
             )}
-            <Box display="flex" flexDirection="row" alignItems="center" mt="30px">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TimePicker
-                        label="Start"
-                        value={newStartTime}
-                        maxTime={newEndTime || undefined}
-                        onChange={(newStartTime: dayjs.Dayjs | null) => setNewStartTime(ensureSelectedDate(newStartTime))}
-                        renderInput={(params: any) => <TextField {...params} variant="standard" style={{ width: '110px' }} />}
-                    />
-                    <Typography sx={{ mx: 2, mt: 1 }}>to</Typography>
-                    <TimePicker
-                        label="End"
-                        value={newEndTime}
-                        minTime={newStartTime || undefined}
-                        onChange={(newEndTime: dayjs.Dayjs | null) => setNewEndTime(ensureSelectedDate(newEndTime))}
-                        renderInput={(params: any) => <TextField {...params} variant="standard" style={{ width: '110px' }} />}
-                    />
-                    <IconButton aria-label="Add new hours" onClick={addHours} style={{
-                        color: theme.palette.secondary.contrastText,
-                        backgroundColor: theme.palette.secondary.main,
-                        marginLeft: '20px',
-                    }}>
-                        <Icon path={mdiPlus} title="Add new hours" size={1} />
-                    </IconButton>
-                </LocalizationProvider>
-            </Box>
         </section >
     );
 };
