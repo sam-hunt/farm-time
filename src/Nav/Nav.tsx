@@ -4,7 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Icon from '@mdi/react'
-import { mdiExport, mdiCalendar, mdiMenu, mdiSigma } from '@mdi/js';
+import { mdiBackupRestore, mdiCalendar, mdiMenu, mdiSigma } from '@mdi/js';
 import { MouseEventHandler, useState } from 'react';
 import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -75,7 +75,7 @@ const Nav = () => {
                         </MenuItem>
                         <MenuItem component={Link} to={'/backup-restore'} onClick={handleClose}>
                             <ListItemIcon>
-                                <Icon path={mdiExport}
+                                <Icon path={mdiBackupRestore}
                                     title='Menu'
                                     size={1}
                                 />
