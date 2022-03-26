@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
 import useHours from '../../hooks/use-hours';
+import { useTheme } from '@mui/material';
 
 interface IReportProps {
     start: dayjs.Dayjs,
@@ -16,6 +17,7 @@ interface IReportProps {
 const DetailedReport = ({ start, end }: IReportProps) => {
 
     const { hours } = useHours();
+    const theme = useTheme();
 
     const daysInRange = Object.keys(hours).filter(d => {
         const day = dayjs(d);
@@ -30,7 +32,9 @@ const DetailedReport = ({ start, end }: IReportProps) => {
         const leftoverMins = minsDiff % 60;
         const hoursDiff = (minsDiff - leftoverMins) / 60;
         const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2,'0')}`;
-        const bgColor = i%2 ? 'white' : 'whitesmoke';
+        const bgColor = theme.palette.mode === 'light'
+            ? (i%2 ? theme.palette.background.paper : 'whitesmoke')
+            : (i%2 ? theme.palette.background.paper : 'black')
         return {
             key: date + times.startTime,
             day: dateObj.format('dddd'),

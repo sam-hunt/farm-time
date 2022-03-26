@@ -3,22 +3,9 @@ import ReactDOM from 'react-dom';
 import App from './App/App';
 import reportWebVitals from './reportWebVitals';
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
-import { ThemeProvider } from '@mui/material';
-import { theme } from './theme';
-import { BrowserRouter } from 'react-router-dom';
-
 ReactDOM.render(
     <React.StrictMode>
-        <ThemeProvider theme={theme}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </ThemeProvider>
+        <App />
     </React.StrictMode>,
     document.getElementById('root')
 );

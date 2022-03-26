@@ -3,8 +3,7 @@ import { useState } from 'react';
 import AdapterDayjs from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TextField from '@mui/material/TextField';
-import { Box, IconButton, Typography } from '@mui/material';
-import { theme } from '../../theme';
+import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import Icon from '@mdi/react'
 import { mdiPlus, mdiDelete, mdiPencil, mdiCheck, mdiClose } from '@mdi/js';
 import TimePicker from '@mui/lab/TimePicker';
@@ -24,6 +23,8 @@ const CalendarPage = () => {
 
     const [newStartTime, setNewStartTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(0).minute(0).second(0).millisecond(0));
     const [newEndTime, setNewEndTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(23).minute(59).second(59).millisecond(59));
+
+    const theme = useTheme();
 
     const addHours = () => {
         if (newStartTime && newEndTime) {

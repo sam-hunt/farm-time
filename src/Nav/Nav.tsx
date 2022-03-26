@@ -4,10 +4,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Icon from '@mdi/react'
-import { mdiBackupRestore, mdiCalendar, mdiMenu, mdiSigma } from '@mdi/js';
-import { MouseEventHandler, useState } from 'react';
+import { mdiBackupRestore, mdiBrightness4, mdiBrightness7, mdiCalendar, mdiMenu, mdiSigma } from '@mdi/js';
+import { MouseEventHandler, useContext, useState } from 'react';
 import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { ThemeContext } from '../App/App';
 
 const Nav = () => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -19,6 +20,7 @@ const Nav = () => {
         setAnchorEl(null);
     };
 
+    const { currentTheme, toggleTheme } = useContext(ThemeContext);
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -88,6 +90,12 @@ const Nav = () => {
                     <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
                         Farm Time
                     </Typography>
+                    <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
+                        {currentTheme === 'light'
+                            ? <Icon path={mdiBrightness4} title='Menu' size={1} />
+                            : <Icon path={mdiBrightness7} title='Menu' size={1} />
+                        }
+                    </IconButton>
                 </Toolbar>
             </AppBar>
         </Box>

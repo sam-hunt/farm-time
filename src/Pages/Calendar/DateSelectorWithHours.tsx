@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { theme } from '../../theme';
-import { TextField } from '@mui/material';
+import { TextField, useTheme } from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/lab';
 import PickersDay, { PickersDayProps, pickersDayClasses } from '@mui/lab/PickersDay';
 import AdapterDayjs from '@mui/lab/AdapterDayjs';
@@ -12,17 +11,19 @@ export interface IDateSelectorWithHoursProps {
     onChange: (value: dayjs.Dayjs | null) => void;
 }
 
-const highlightedDayStyles = {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-    '&:hover': {
-        backgroundColor: theme.palette.primary.dark,
-    },
-}
-
 const DateSelectorWithHours = ({ value, onChange }: IDateSelectorWithHoursProps) => {
     const { hours } = useHours();
     const highlightedDays = useMemo(() => Object.keys(hours), [hours])
+
+    const theme = useTheme();
+
+    const highlightedDayStyles = {
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
+        '&:hover': {
+            backgroundColor: theme.palette.primary.dark,
+        },
+    }
 
     return <LocalizationProvider dateAdapter={AdapterDayjs}>
         <StaticDatePicker
