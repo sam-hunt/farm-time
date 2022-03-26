@@ -27,8 +27,8 @@ const Nav = () => {
             <AppBar position='static'>
                 <Toolbar>
                     <IconButton
-                        id='basic-button'
-                        aria-controls={open ? 'basic-menu' : undefined}
+                        id='menu-button'
+                        aria-controls={open ? 'nav-menu' : undefined}
                         aria-haspopup='true'
                         aria-expanded={open ? 'true' : undefined}
                         onClick={handleClick}
@@ -45,12 +45,12 @@ const Nav = () => {
                         />
                     </IconButton>
                     <Menu
-                        id='basic-menu'
+                        id='nav-menu'
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
                         MenuListProps={{
-                            'aria-labelledby': 'basic-button',
+                            'aria-labelledby': 'menu-button',
                         }}
                     >
                         <MenuItem component={Link} to={'/calendar'} onClick={handleClose}>

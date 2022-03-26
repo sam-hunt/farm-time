@@ -128,7 +128,7 @@ const CalendarPage = () => {
                 const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2, '0')} hours`;
                 return (
                     <Box key={i} display='flex' flexDirection='row' alignItems='center' mb='8px' pl='5px'
-                        style={{ backgroundColor: isEditing ? (editingId === i ? 'whitesmoke' : 'inherit') : 'inherit' }}
+                        style={{ backgroundColor: isEditing ? (editingId === i ? (theme.palette.mode === 'light' ? 'whitesmoke' : 'black') : 'inherit') : 'inherit' }}
                     >
                         <Typography color='primary'>
                             <strong>{start.format('hh:mm A')}</strong>

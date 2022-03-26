@@ -44,7 +44,6 @@ const ReportsPage = () => {
                 style={{ minWidth: '200px' }}
                 labelId='report-selector-label'
                 value={selectedReport}
-                label='Report'
                 onChange={(event) => setSelectedReport(event.target.value)}
             >
                 <MenuItem value='simple'>Simple</MenuItem>
