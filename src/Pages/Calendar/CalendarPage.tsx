@@ -21,8 +21,8 @@ const CalendarPage = () => {
 
     const { hoursForDay, setHoursForDay, hoursForDayTotal } = useHoursForDay(selectedDate);
 
-    const [newStartTime, setNewStartTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(0).minute(0).second(0).millisecond(0));
-    const [newEndTime, setNewEndTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(23).minute(59).second(59).millisecond(59));
+    const [newStartTime, setNewStartTime] = useState<dayjs.Dayjs | null>(null);
+    const [newEndTime, setNewEndTime] = useState<dayjs.Dayjs | null>(null);
 
     const theme = useTheme();
 
@@ -35,8 +35,8 @@ const CalendarPage = () => {
             newHours.sort((a, b) => dayjs(a.startTime).diff(dayjs(b.startTime), 'minute'));
             setHoursForDay(newHours);
         }
-        setNewStartTime(newEndTime);
-        setNewEndTime(selectedDate.hour(23).minute(0).second(0).millisecond(0));
+        setNewStartTime(null);
+        setNewEndTime(null);
         setEditingId(null);
     };
     const editHours = (i: number) => () => {
@@ -60,6 +60,8 @@ const CalendarPage = () => {
         setEditingId(null);
     }
     const discardEdit = () => {
+        setNewStartTime(null);
+        setNewEndTime(null);
         setEditingId(null);
     }
 
@@ -83,14 +85,14 @@ const CalendarPage = () => {
                         label='Start'
                         value={newStartTime}
                         onChange={(newStartTime: dayjs.Dayjs | null) => setNewStartTime(ensureSelectedDate(newStartTime))}
-                        renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '110px' }} />}
+                        renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '140px' }} />}
                     />
                     <Typography sx={{ mx: 2, mt: 1 }}>to</Typography>
                     <TimePicker
                         label='End'
                         value={newEndTime}
                         onChange={(newEndTime: dayjs.Dayjs | null) => setNewEndTime(ensureSelectedDate(newEndTime))}
-                        renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '110px' }} />}
+                        renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '140px' }} />}
                     />
                     {!isEditing ?
                         <IconButton aria-label='Add new hours' onClick={addHours} style={{
