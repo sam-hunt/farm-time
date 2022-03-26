@@ -17,6 +17,8 @@ const today = () => dayjs().hour(0).minute(0).second(0).millisecond(0);
 
 const CalendarPage = () => {
     const [selectedDate, setSelectedDate] = useLocalStorageDayjs('selected-date', today());
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const isEditing = editingId !== null;
 
     const { hoursForDay, setHoursForDay, hoursForDayTotal } = useHoursForDay(selectedDate);
 
@@ -24,22 +26,40 @@ const CalendarPage = () => {
     const [newEndTime, setNewEndTime] = useState<dayjs.Dayjs | null>(selectedDate.hour(23).minute(59).second(59).millisecond(59));
 
     const addHours = () => {
-        if (newStartTime && newEndTime)
-            setHoursForDay([...hoursForDay, { startTime: newStartTime.toISOString(), endTime: newEndTime.toISOString() }]);
+        if (newStartTime && newEndTime) {
+            const newHours = [
+                ...hoursForDay,
+                { startTime: newStartTime.toISOString(), endTime: newEndTime.toISOString() },
+            ];
+            newHours.sort((a, b) => dayjs(a.startTime).diff(dayjs(b.startTime), 'minute'));
+            setHoursForDay(newHours);
+        }
         setNewStartTime(newEndTime);
-        setNewEndTime(selectedDate.hour(23).minute(59).second(59).millisecond(59));
+        setNewEndTime(selectedDate.hour(23).minute(0).second(0).millisecond(0));
+        setEditingId(null);
     };
     const editHours = (i: number) => () => {
-
+        setEditingId(i);
+        setNewStartTime(dayjs(hoursForDay[i].startTime));
+        setNewEndTime(dayjs(hoursForDay[i].endTime));
     }
     const delHours = (i: number) => () => {
         setHoursForDay([...hoursForDay.slice(0, i), ...hoursForDay.slice(i + 1)]);
     }
     const saveEdit = () => {
-
+        if (newStartTime && newEndTime) {
+            const newHours = [...hoursForDay]
+            newHours[editingId!] = {
+                startTime: newStartTime.toISOString(),
+                endTime: newEndTime.toISOString(),
+            };
+            newHours.sort((a, b) => dayjs(a.startTime).diff(dayjs(b.startTime), 'minute'));
+            setHoursForDay(newHours);
+        }
+        setEditingId(null);
     }
     const discardEdit = () => {
-
+        setEditingId(null);
     }
 
     // Ensure that the date is correct, e.g. in case a timepicker tries to roll it over a dateline 🤦
@@ -61,7 +81,6 @@ const CalendarPage = () => {
                     <TimePicker
                         label='Start'
                         value={newStartTime}
-                        maxTime={newEndTime || undefined}
                         onChange={(newStartTime: dayjs.Dayjs | null) => setNewStartTime(ensureSelectedDate(newStartTime))}
                         renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '110px' }} />}
                     />
@@ -69,29 +88,33 @@ const CalendarPage = () => {
                     <TimePicker
                         label='End'
                         value={newEndTime}
-                        minTime={newStartTime || undefined}
                         onChange={(newEndTime: dayjs.Dayjs | null) => setNewEndTime(ensureSelectedDate(newEndTime))}
                         renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '110px' }} />}
                     />
-                    <IconButton aria-label='Add new hours' onClick={addHours} style={{
-                        color: theme.palette.secondary.contrastText,
-                        backgroundColor: theme.palette.secondary.main,
-                        marginLeft: '25px',
-                    }}>
-                        <Icon path={mdiPlus} title='Add new hours' size={1} />
-                    </IconButton>
-                    <IconButton aria-label='Add new hours' onClick={saveEdit} style={{
-                        color: theme.palette.success.main,
-                        marginLeft: '25px',
-                    }}>
-                        <Icon path={mdiCheck} title='Add new hours' size={1} />
-                    </IconButton>
-                    <IconButton aria-label='Add new hours' onClick={discardEdit} style={{
-                        color: theme.palette.warning.main,
-                        marginLeft: '5px',
-                    }}>
-                        <Icon path={mdiClose} title='Add new hours' size={1} />
-                    </IconButton>
+                    {!isEditing ?
+                        <IconButton aria-label='Add new hours' onClick={addHours} style={{
+                            color: theme.palette.secondary.contrastText,
+                            backgroundColor: theme.palette.secondary.main,
+                            marginLeft: '25px',
+                        }}>
+                            <Icon path={mdiPlus} title='Add new hours' size={1} />
+                        </IconButton>
+                        :
+                        <>
+                            <IconButton aria-label='Add new hours' onClick={saveEdit} style={{
+                                color: theme.palette.success.main,
+                                marginLeft: '25px',
+                            }}>
+                                <Icon path={mdiCheck} title='Add new hours' size={1} />
+                            </IconButton>
+                            <IconButton aria-label='Add new hours' onClick={discardEdit} style={{
+                                color: theme.palette.warning.main,
+                                marginLeft: '5px',
+                            }}>
+                                <Icon path={mdiClose} title='Add new hours' size={1} />
+                            </IconButton>
+                        </>
+                    }
                 </LocalizationProvider>
             </Box>
 
@@ -103,7 +126,9 @@ const CalendarPage = () => {
                 const hoursDiff = (minsDiff - leftoverMins) / 60;
                 const timeDiff = `${hoursDiff}:${leftoverMins.toString().padStart(2, '0')} hours`;
                 return (
-                    <Box key={i} display='flex' flexDirection='row' alignItems='center' mb='8px'>
+                    <Box key={i} display='flex' flexDirection='row' alignItems='center' mb='8px' pl='5px'
+                        style={{ backgroundColor: isEditing ? (editingId === i ? 'whitesmoke' : 'inherit') : 'inherit' }}
+                    >
                         <Typography color='primary'>
                             <strong>{start.format('hh:mm A')}</strong>
                         </Typography>
@@ -114,21 +139,21 @@ const CalendarPage = () => {
                         <Typography color='secondary' sx={{ ml: 2 }}>
                             (<strong>{timeDiff}</strong>)
                         </Typography>
-                        <IconButton aria-label='edit' onClick={editHours(i)} style={{ marginLeft: '10px' }}>
+                        <IconButton aria-label='edit' disabled={isEditing && editingId !== i} onClick={editHours(i)} style={{ marginLeft: '10px' }}>
                             <Icon path={mdiPencil}
                                 title='Edit'
                                 size={0.8}
                             />
                         </IconButton>
-                        <IconButton aria-label='delete' color='error' onClick={delHours(i)}>
+                        <IconButton aria-label='delete' disabled={isEditing && editingId !== i} color='error' onClick={delHours(i)}>
                             <Icon path={mdiDelete}
                                 title='Delete'
                                 size={0.8}
                             />
                         </IconButton>
-                    </Box>);
-            }
-            )}
+                    </Box>
+                );
+            })}
         </section >
     );
 };
