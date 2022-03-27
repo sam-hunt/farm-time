@@ -2,15 +2,15 @@
 import Icon from '@mdi/react';
 import { mdiExport, mdiImport } from '@mdi/js';
 import { Alert, AlertColor, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Snackbar, Typography } from '@mui/material';
-import { useState, ChangeEvent, useRef, SyntheticEvent } from 'react';
+import { useState, ChangeEvent, SyntheticEvent } from 'react';
 import useImportHours, { MergeStrategy } from '../../hooks/use-import-hours';
 import useExportHours from '../../hooks/use-export-hours';
 
-const BackupRestorePage = () => {
+const BackupPage = () => {
     const [mergeStrategy, setMergeStrategy] = useState<MergeStrategy>(MergeStrategy.REPLACE);
-    const importFileInputEl = useRef<HTMLInputElement>(null);
+    const [importFileInputEl, setImportFileInputEl] = useState<HTMLInputElement | null>(null);
 
-    const { importJson } = useImportHours(importFileInputEl?.current, mergeStrategy);
+    const { importJson } = useImportHours(importFileInputEl, mergeStrategy);
     const { exportJson } = useExportHours();
 
     const [snackOpen, setSnackOpen] = useState<boolean>(false);
@@ -67,7 +67,7 @@ const BackupRestorePage = () => {
             <br />
             <label htmlFor='upload-json'>
                 <input
-                    ref={importFileInputEl}
+                    ref={el => setImportFileInputEl(el)}
                     onChange={handleImport}
                     style={{ display: 'none' }}
                     id='upload-json'
@@ -92,4 +92,4 @@ const BackupRestorePage = () => {
     </section>;
 }
 
-export default BackupRestorePage;
+export default BackupPage;

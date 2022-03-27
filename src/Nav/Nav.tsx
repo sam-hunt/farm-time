@@ -51,7 +51,7 @@ const Nav = () => {
                             <ListItemIcon><Icon path={mdiSigma} title='Menu' size={1}/></ListItemIcon>
                             <ListItemText>Reports</ListItemText>
                         </MenuItem>
-                        <MenuItem component={Link} to={'/backup-restore'} onClick={handleClose}>
+                        <MenuItem component={Link} to={'/backup'} onClick={handleClose}>
                             <ListItemIcon><Icon path={mdiBackupRestore} title='Menu' size={1}/></ListItemIcon>
                             <ListItemText>Backup/Restore</ListItemText>
                         </MenuItem>

@@ -4,7 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import CalendarPage from '../Pages/Calendar/CalendarPage';
 import ReportsPage from '../Pages/Reports/ReportsPage';
-import BackupRestorePage from '../Pages/BackupRestore/BackupRestorePage';
+import BackupPage from '../Pages/Backup/BackupPage';
 import useLocalStorage from '../hooks/use-local-storage';
 
 import { CssBaseline, ThemeProvider } from '@mui/material';
@@ -51,7 +51,7 @@ const App = () => {
                         <Route path="/" element={<Layout />}>
                             <Route path="calendar" element={<CalendarPage />} />
                             <Route path="reports" element={<ReportsPage />} />
-                            <Route path="backup-restore" element={<BackupRestorePage />} />
+                            <Route path="backup" element={<BackupPage />} />
                             <Route path="" element={<Navigate replace to="/calendar" />} />
                             <Route path="*" element={<Navigate replace to="/calendar" />} />
                         </Route>
