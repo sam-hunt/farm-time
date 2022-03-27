@@ -1,6 +1,6 @@
 import './App.css';
 import { createContext } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import CalendarPage from '../Pages/Calendar/CalendarPage';
 import ReportsPage from '../Pages/Reports/ReportsPage';
@@ -33,8 +33,8 @@ export interface IThemeContext {
     toggleTheme: () => void,
 }
 
-export const HoursContext = createContext<IHoursContext>({ hours: {}, setHours: () => {} });
-export const ThemeContext = createContext<IThemeContext>({ currentTheme: 'light', toggleTheme: () => {} });
+export const HoursContext = createContext<IHoursContext>({ hours: {}, setHours: () => { } });
+export const ThemeContext = createContext<IThemeContext>({ currentTheme: 'light', toggleTheme: () => { } });
 
 const App = () => {
     const [hours, setHours] = useLocalStorage<IHours>('hours', {});
@@ -52,6 +52,8 @@ const App = () => {
                             <Route path="calendar" element={<CalendarPage />} />
                             <Route path="reports" element={<ReportsPage />} />
                             <Route path="backup-restore" element={<BackupRestorePage />} />
+                            <Route path="" element={<Navigate replace to="/calendar" />} />
+                            <Route path="*" element={<Navigate replace to="/calendar" />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
