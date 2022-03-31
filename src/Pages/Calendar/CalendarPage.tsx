@@ -65,8 +65,13 @@ const CalendarPage = () => {
         setEditingId(null);
     }
 
-    // Ensure that the date is correct, e.g. in case a timepicker tries to roll it over a dateline 🤦
-    const ensureSelectedDate = ((date: dayjs.Dayjs | null) => date?.date(selectedDate.date()).month(selectedDate.month()).year(selectedDate.year()) || null)
+    // Ensure that the date is correct in case a timepicker tries to roll it over a dateline 🤦
+    // Also truncate seconds and ms as our pickers and calculations only got to minute-precision
+    const ensureSelectedDate = ((date: dayjs.Dayjs | null) => (date
+        ?.date(selectedDate.date())
+        .month(selectedDate.month())
+        .year(selectedDate.year())
+        .second(0).millisecond(0) || null))
 
     return (
         <section>
