@@ -3,9 +3,9 @@ import { useState } from 'react';
 import AdapterDayjs from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TextField from '@mui/material/TextField';
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
+import { Box, Button, Divider, IconButton, Typography, useTheme } from '@mui/material';
 import Icon from '@mdi/react'
-import { mdiPlus, mdiDelete, mdiPencil, mdiCheck, mdiClose } from '@mdi/js';
+import { mdiPlus, mdiDelete, mdiPencil, mdiCheck, mdiClose, mdiArrowLeft, mdiCalendarToday, mdiArrowRight } from '@mdi/js';
 import TimePicker from '@mui/lab/TimePicker';
 import useLocalStorageDayjs from '../../hooks/use-local-storage-dayjs';
 import useHoursForDay from '../../hooks/use-hours-for-day';
@@ -79,6 +79,40 @@ const CalendarPage = () => {
                 Calendar
             </Typography>
             <DateSelectorWithHours value={selectedDate} onChange={(newValue) => setSelectedDate(newValue || today())} />
+            <Button
+                variant='outlined'
+                aria-label='previous day'
+                onClick={() => setSelectedDate(selectedDate.subtract(1, 'day'))}
+                color='inherit'
+                sx={{ ml: 2, mr: 1 }}
+                startIcon={<Icon path={mdiArrowLeft} title='Previous Day' size={0.8} />}
+            >
+                Previous
+            </Button>
+            <Button
+                variant='outlined'
+                aria-label='today'
+                onClick={() => setSelectedDate(today())}
+                color='inherit'
+                sx={{ ml: 1, mr: 1 }}
+                startIcon={<Icon path={mdiCalendarToday} title='Today' size={0.8} />}
+            >
+                Today
+            </Button>
+            <Button
+                variant='outlined'
+                aria-label='next day'
+                onClick={() => setSelectedDate(selectedDate.add(1, 'day'))}
+                color='inherit'
+                endIcon={<Icon path={mdiArrowRight} title='Next Day' size={0.8} />}
+                sx={{ ml: 1, mr: 2 }}
+            >
+                Next
+            </Button>
+            <br /><br />
+            <Divider />
+            <br />
+
             <Typography variant='h4' sx={{ mb: 2 }}>
                 {hoursForDayTotal.totalHours} Hours,&nbsp;
                 {hoursForDayTotal.totalLeftoverMins} Minutes
@@ -100,6 +134,7 @@ const CalendarPage = () => {
                         renderInput={(params: any) => <TextField {...params} variant='standard' style={{ width: '140px' }} />}
                     />
                     {!isEditing ?
+                        // Add hours as new row
                         <IconButton aria-label='Add new hours' onClick={addHours} style={{
                             color: theme.palette.secondary.contrastText,
                             backgroundColor: theme.palette.secondary.main,
@@ -108,21 +143,20 @@ const CalendarPage = () => {
                             <Icon path={mdiPlus} title='Add new hours' size={1} />
                         </IconButton>
                         :
-                        <>
-                            <IconButton aria-label='Add new hours' onClick={saveEdit} style={{
-                                color: theme.palette.success.main,
-                                marginLeft: '25px',
-                            }}>
-                                <Icon path={mdiCheck} title='Add new hours' size={1} />
-                            </IconButton>
-                            <IconButton aria-label='Add new hours' onClick={discardEdit} style={{
-                                color: theme.palette.warning.main,
-                                marginLeft: '5px',
-                            }}>
-                                <Icon path={mdiClose} title='Add new hours' size={1} />
-                            </IconButton>
-                        </>
+                        // Save changes to editing row
+                        <IconButton aria-label='Save changes' onClick={saveEdit} style={{
+                            color: theme.palette.success.main,
+                            marginLeft: '25px',
+                        }}>
+                            <Icon path={mdiCheck} title='Save changes' size={1} />
+                        </IconButton>
                     }
+                    <IconButton aria-label='Discard changes' onClick={discardEdit} style={{
+                        color: theme.palette.warning.main,
+                        marginLeft: '5px',
+                    }}>
+                        <Icon path={mdiClose} title='Discard changes' size={1} />
+                    </IconButton>
                 </LocalizationProvider>
             </Box>
 
